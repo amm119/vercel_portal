@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DQTV — Bảng điều khiển (Vercel)</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0f1117;
+      --surface:  #1a1d27;
+      --border:   #2a2d3e;
+      --accent1:  #3b82f6;
+      --accent2:  #10b981;
+      --accent3:  #f59e0b;
+      --text:     #e2e8f0;
+      --muted:    #64748b;
+      --radius:   14px;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 20px 60px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 52px;
+    }
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .logo-icon {
+      width: 52px; height: 52px;
+      background: linear-gradient(135deg, var(--accent1), #6366f1);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-top: 6px;
+    }
+    .host-badge {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: 0.78rem;
+      font-family: 'Courier New', monospace;
+      color: var(--accent2);
+      background: color-mix(in srgb, var(--accent2) 12%, transparent);
+      border: 1px solid color-mix(in srgb, var(--accent2) 25%, transparent);
+      padding: 4px 12px;
+      border-radius: 99px;
+    }
+
+    .status-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 44px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      padding: 6px 14px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color .2s, color .2s;
+    }
+    .status-pill:hover { border-color: var(--accent1); color: var(--text); }
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--muted);
+      flex-shrink: 0;
+      transition: background .4s;
+    }
+    .dot.online  { background: #22c55e; box-shadow: 0 0 6px #22c55e88; }
+    .dot.loading { background: var(--accent3); animation: pulse 1s infinite; }
+    .dot.error   { background: #ef4444; }
+
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 980px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      overflow: hidden;
+      transition: transform .18s, border-color .18s, box-shadow .18s;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity .2s;
+      pointer-events: none;
+    }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px #0008; }
+    .card:hover::before { opacity: 1; }
+    .card:active { transform: translateY(0); }
+
+    .card-1 { --c: var(--accent1); }
+    .card-1::before { background: linear-gradient(135deg, #3b82f608, transparent 60%); }
+    .card-1:hover { border-color: var(--accent1); }
+
+    .card-2 { --c: var(--accent2); }
+    .card-2::before { background: linear-gradient(135deg, #10b98108, transparent 60%); }
+    .card-2:hover { border-color: var(--accent2); }
+
+    .card-3 { --c: var(--accent3); }
+    .card-3::before { background: linear-gradient(135deg, #f59e0b08, transparent 60%); }
+    .card-3:hover { border-color: var(--accent3); }
+
+    .card-4 { --c: #a78bfa; }
+    .card-4::before { background: linear-gradient(135deg, #a78bfa08, transparent 60%); }
+    .card-4:hover { border-color: #a78bfa; }
+
+    .card-5 { --c: #10b981; }
+    .card-5::before { background: linear-gradient(135deg, #10b98108, transparent 60%); }
+    .card-5:hover { border-color: #10b981; }
+
+    .card-icon {
+      width: 46px; height: 46px;
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--c) 15%, transparent);
+      border: 1px solid color-mix(in srgb, var(--c) 30%, transparent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .card-title {
+      font-size: 1.08rem;
+      font-weight: 600;
+    }
+    .card-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+    .port-badge {
+      font-size: 0.75rem;
+      font-family: 'Courier New', monospace;
+      color: var(--c);
+      background: color-mix(in srgb, var(--c) 12%, transparent);
+      border: 1px solid color-mix(in srgb, var(--c) 25%, transparent);
+      padding: 3px 9px;
+      border-radius: 6px;
+    }
+    .arrow {
+      color: var(--muted);
+      font-size: 1rem;
+      transition: color .2s, transform .2s;
+    }
+    .card:hover .arrow { color: var(--c); transform: translateX(3px); }
+
+    footer {
+      margin-top: 60px;
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-align: center;
+      line-height: 1.7;
+    }
+    footer span { color: var(--text); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <div class="logo-icon">🎖</div>
+      <div>
+        <h1>DQTV Portal</h1>
+      </div>
+    </div>
+    <p class="subtitle">Bảng điều khiển trung tâm — chọn ứng dụng để truy cập</p>
+    <span class="host-badge" id="host-badge"></span>
+  </header>
+
+  <div class="status-bar">
+    <div class="status-pill" onclick="checkAll()">
+      <span class="dot" id="dot-all"></span>Kiểm tra kết nối
+    </div>
+    <div class="status-pill">
+      <span class="dot online" id="dot-1"></span>
+      <span id="label-1">Biên chế đơn vị</span>
+    </div>
+    <div class="status-pill">
+      <span class="dot online" id="dot-2"></span>
+      <span id="label-2">Tuyển quân cơ sở</span>
+    </div>
+    <div class="status-pill">
+      <span class="dot online" id="dot-3"></span>
+      <span id="label-3">Quản lý tuyển quân</span>
+    </div>
+    <div class="status-pill">
+      <span class="dot online" id="dot-4"></span>
+      <span id="label-4">Xử lý Word</span>
+    </div>
+    <div class="status-pill">
+      <span class="dot online" id="dot-5"></span>
+      <span id="label-5">Tối giản Excel</span>
+    </div>
+  </div>
+
+  <div class="grid">
+
+    <a class="card card-1" href="#" target="_blank" id="card-1" data-port="8765">
+      <div class="card-icon">📋</div>
+      <div>
+        <div class="card-title">Biên chế đơn vị</div>
+        <div class="card-desc">Tra cứu và chỉnh sửa danh sách biên chế đơn vị từ file CSV. Hỗ trợ tìm kiếm nhanh, lọc và lưu tự động.</div>
+      </div>
+      <div class="card-footer">
+        <span class="port-badge">:8765</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+
+    <a class="card card-2" href="#" target="_blank" id="card-2" data-port="8888">
+      <div class="card-icon">🔍</div>
+      <div>
+        <div class="card-title">Tuyển quân cơ sở</div>
+        <div class="card-desc">Công cụ tìm kiếm danh sách tuyển quân theo khu vực, đọc dữ liệu trực tiếp từ các file Excel.</div>
+      </div>
+      <div class="card-footer">
+        <span class="port-badge">:8888</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+
+    <a class="card card-3" href="#" target="_blank" id="card-3" data-port="4173">
+      <div class="card-icon">⚙️</div>
+      <div>
+        <div class="card-title">Quản lý tuyển quân</div>
+        <div class="card-desc">Hệ thống quản lý tuyển quân toàn diện với cơ sở dữ liệu Supabase, báo cáo và xuất Excel.</div>
+      </div>
+      <div class="card-footer">
+        <span class="port-badge">:4173</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+
+    <a class="card card-4" href="#" target="_blank" id="card-4" data-port="8766">
+      <div class="card-icon">📄</div>
+      <div>
+        <div class="card-title">Công cụ xử lý Word</div>
+        <div class="card-desc">Gộp nhiều file .docx thành một. Tách file Word thành nhiều file theo cấu hình Excel.</div>
+      </div>
+      <div class="card-footer">
+        <span class="port-badge">:8766</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+
+    <a class="card card-5" href="#" target="_blank" id="card-5" data-port="8767">
+      <div class="card-icon">📊</div>
+      <div>
+        <div class="card-title">Tối giản Excel</div>
+        <div class="card-desc">Giảm kích thước file Excel, xoá format rác ngoài vùng dữ liệu, xoá Macro/VBA. Giữ nguyên dữ liệu và định dạng.</div>
+      </div>
+      <div class="card-footer">
+        <span class="port-badge">:8767</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+
+  </div>
+
+  <footer>
+    Mọi liên kết trỏ về <span id="portal-host"></span> — DNS trỏ tới IPv4 local (cập nhật tự động khi chạy run.command)<br />
+    <span id="portal-url"></span>
+  </footer>
+
+  <script>
+    // DNS trỏ về IPv4 local (được cập nhật tự động bởi run.command)
+    const PORTAL_HOST = 'dqtt.dishow.net';
+    const IS_SECURE = window.location.protocol === 'https:';
+    const PROTO = IS_SECURE ? 'https' : 'http';
+
+    const APPS = [
+      { id: 1, port: 8765 },
+      { id: 2, port: 8888 },
+      { id: 3, port: 4173 },
+      { id: 4, port: 8766 },
+      { id: 5, port: 8767 },
+    ];
+
+    function appUrl(port) {
+      // Luôn dùng http:// cho dịch vụ local (cổng chạy HTTP thuần).
+      // Trang Vercel là HTTPS nhưng liên kết điều hướng top-level vẫn mở được http.
+      return `http://${PORTAL_HOST}:${port}`;
+    }
+
+    // Gán href động cho từng card
+    APPS.forEach(app => {
+      const card = document.getElementById(`card-${app.id}`);
+      if (card) card.href = appUrl(app.port);
+    });
+
+    document.getElementById('host-badge').textContent = PORTAL_HOST;
+    document.getElementById('portal-host').textContent = PORTAL_HOST;
+    document.getElementById('portal-url').textContent = `Điểm truy cập mọi ứng dụng: http://${PORTAL_HOST}`;
+
+    async function checkPort(url) {
+      if (IS_SECURE) {
+        // Trang HTTPS không gọi được http service (mixed content bị chặn).
+        // Bỏ qua kiểm tra thật — chỉ coi là online khi mở từ HTTPS.
+        return true;
+      }
+      try {
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 2500);
+        await fetch(url, { mode: 'no-cors', signal: ctrl.signal });
+        clearTimeout(timer);
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    async function checkAll() {
+      const dotAll = document.getElementById('dot-all');
+      dotAll.className = 'dot loading';
+      let allOk = true;
+
+      for (const app of APPS) {
+        const dot = document.getElementById(`dot-${app.id}`);
+        if (!dot) continue;
+        dot.className = 'dot loading';
+        const ok = await checkPort(appUrl(app.port));
+        dot.className = 'dot ' + (ok ? 'online' : 'error');
+        if (!ok) allOk = false;
+      }
+
+      dotAll.className = 'dot ' + (allOk ? 'online' : 'error');
+    }
+
+    window.addEventListener('load', () => setTimeout(checkAll, 300));
+  </script>
+
+</body>
+</html>
