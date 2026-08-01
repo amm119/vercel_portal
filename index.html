@@ -32,7 +32,7 @@
 
     header {
       text-align: center;
-      margin-bottom: 52px;
+      margin-bottom: 44px;
     }
     .logo {
       display: inline-flex;
@@ -57,16 +57,32 @@
       font-size: 0.95rem;
       margin-top: 6px;
     }
-    .host-badge {
-      display: inline-block;
-      margin-top: 12px;
-      font-size: 0.78rem;
+
+    /* ── Host switcher: dq.dishow.net / dqtt.dishow.net ──────── */
+    .host-switcher {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+    .host-pill {
       font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: border-color .2s, color .2s, background .2s;
+      user-select: none;
+    }
+    .host-pill:hover { border-color: var(--accent2); color: var(--text); }
+    .host-pill.active {
       color: var(--accent2);
       background: color-mix(in srgb, var(--accent2) 12%, transparent);
-      border: 1px solid color-mix(in srgb, var(--accent2) 25%, transparent);
-      padding: 4px 12px;
-      border-radius: 99px;
+      border-color: var(--accent2);
     }
 
     .status-bar {
@@ -216,102 +232,16 @@
     <div class="logo">
       <div class="logo-icon">🎖</div>
       <div>
-        <h1>DQTV Portal</h1>
+        <h1 id="title">DQTV Portal</h1>
       </div>
     </div>
-    <p class="subtitle">Bảng điều khiển trung tâm — chọn ứng dụng để truy cập</p>
-    <span class="host-badge" id="host-badge"></span>
+    <p class="subtitle" id="subtitle">Bảng điều khiển trung tâm — chọn ứng dụng để truy cập</p>
+    <div class="host-switcher" id="host-switcher"></div>
   </header>
 
-  <div class="status-bar">
-    <div class="status-pill" onclick="checkAll()">
-      <span class="dot" id="dot-all"></span>Kiểm tra kết nối
-    </div>
-    <div class="status-pill">
-      <span class="dot online" id="dot-1"></span>
-      <span id="label-1">Biên chế đơn vị</span>
-    </div>
-    <div class="status-pill">
-      <span class="dot online" id="dot-2"></span>
-      <span id="label-2">Tuyển quân cơ sở</span>
-    </div>
-    <div class="status-pill">
-      <span class="dot online" id="dot-3"></span>
-      <span id="label-3">Quản lý tuyển quân</span>
-    </div>
-    <div class="status-pill">
-      <span class="dot online" id="dot-4"></span>
-      <span id="label-4">Xử lý Word</span>
-    </div>
-    <div class="status-pill">
-      <span class="dot online" id="dot-5"></span>
-      <span id="label-5">Tối giản Excel</span>
-    </div>
-  </div>
+  <div class="status-bar" id="status-bar"></div>
 
-  <div class="grid">
-
-    <a class="card card-1" href="#" target="_blank" id="card-1" data-port="8765">
-      <div class="card-icon">📋</div>
-      <div>
-        <div class="card-title">Biên chế đơn vị</div>
-        <div class="card-desc">Tra cứu và chỉnh sửa danh sách biên chế đơn vị từ file CSV. Hỗ trợ tìm kiếm nhanh, lọc và lưu tự động.</div>
-      </div>
-      <div class="card-footer">
-        <span class="port-badge">:8765</span>
-        <span class="arrow">→</span>
-      </div>
-    </a>
-
-    <a class="card card-2" href="#" target="_blank" id="card-2" data-port="8888">
-      <div class="card-icon">🔍</div>
-      <div>
-        <div class="card-title">Tuyển quân cơ sở</div>
-        <div class="card-desc">Công cụ tìm kiếm danh sách tuyển quân theo khu vực, đọc dữ liệu trực tiếp từ các file Excel.</div>
-      </div>
-      <div class="card-footer">
-        <span class="port-badge">:8888</span>
-        <span class="arrow">→</span>
-      </div>
-    </a>
-
-    <a class="card card-3" href="#" target="_blank" id="card-3" data-port="4173">
-      <div class="card-icon">⚙️</div>
-      <div>
-        <div class="card-title">Quản lý tuyển quân</div>
-        <div class="card-desc">Hệ thống quản lý tuyển quân toàn diện với cơ sở dữ liệu Supabase, báo cáo và xuất Excel.</div>
-      </div>
-      <div class="card-footer">
-        <span class="port-badge">:4173</span>
-        <span class="arrow">→</span>
-      </div>
-    </a>
-
-    <a class="card card-4" href="#" target="_blank" id="card-4" data-port="8766">
-      <div class="card-icon">📄</div>
-      <div>
-        <div class="card-title">Công cụ xử lý Word</div>
-        <div class="card-desc">Gộp nhiều file .docx thành một. Tách file Word thành nhiều file theo cấu hình Excel.</div>
-      </div>
-      <div class="card-footer">
-        <span class="port-badge">:8766</span>
-        <span class="arrow">→</span>
-      </div>
-    </a>
-
-    <a class="card card-5" href="#" target="_blank" id="card-5" data-port="8767">
-      <div class="card-icon">📊</div>
-      <div>
-        <div class="card-title">Tối giản Excel</div>
-        <div class="card-desc">Giảm kích thước file Excel, xoá format rác ngoài vùng dữ liệu, xoá Macro/VBA. Giữ nguyên dữ liệu và định dạng.</div>
-      </div>
-      <div class="card-footer">
-        <span class="port-badge">:8767</span>
-        <span class="arrow">→</span>
-      </div>
-    </a>
-
-  </div>
+  <div class="grid" id="grid"></div>
 
   <footer>
     Mọi liên kết trỏ về <span id="portal-host"></span> — DNS trỏ tới IPv4 local (cập nhật tự động khi chạy run.command)<br />
@@ -319,34 +249,122 @@
   </footer>
 
   <script>
-    // DNS trỏ về IPv4 local (được cập nhật tự động bởi run.command)
-    const PORTAL_HOST = 'dqtt.dishow.net';
+    const DEFAULT_CONFIG = {
+      title: 'DQTV Portal',
+      subtitle: 'Bảng điều khiển trung tâm — chọn ứng dụng để truy cập',
+      protocol: 'http',
+      targetHost: 'dqtt.dishow.net',
+      accessHosts: ['dq.dishow.net', 'dqtt.dishow.net'],
+      apps: [
+        { id: 1, port: 8765, icon: '📋', title: 'Biên chế đơn vị', desc: 'Tra cứu và chỉnh sửa danh sách biên chế đơn vị từ file CSV. Hỗ trợ tìm kiếm nhanh, lọc và lưu tự động.' },
+        { id: 2, port: 8888, icon: '🔍', title: 'Tuyển quân cơ sở', desc: 'Công cụ tìm kiếm danh sách tuyển quân theo khu vực, đọc dữ liệu trực tiếp từ các file Excel.' },
+        { id: 3, port: 4173, icon: '⚙️', title: 'Quản lý tuyển quân', desc: 'Hệ thống quản lý tuyển quân toàn diện với cơ sở dữ liệu Supabase, báo cáo và xuất Excel.' },
+        { id: 4, port: 8766, icon: '📄', title: 'Công cụ xử lý Word', desc: 'Gộp nhiều file .docx thành một. Tách file Word thành nhiều file theo cấu hình Excel.' },
+        { id: 5, port: 8767, icon: '📊', title: 'Tối giản Excel', desc: 'Giảm kích thước file Excel, xoá format rác ngoài vùng dữ liệu, xoá Macro/VBA. Giữ nguyên dữ liệu và định dạng.' }
+      ]
+    };
+
+    let CONFIG = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+    let currentHost = CONFIG.targetHost;
     const IS_SECURE = window.location.protocol === 'https:';
-    const PROTO = IS_SECURE ? 'https' : 'http';
+    const ACCENTS = ['var(--accent1)', 'var(--accent2)', 'var(--accent3)', '#a78bfa', '#10b981'];
 
-    const APPS = [
-      { id: 1, port: 8765 },
-      { id: 2, port: 8888 },
-      { id: 3, port: 4173 },
-      { id: 4, port: 8766 },
-      { id: 5, port: 8767 },
-    ];
-
-    function appUrl(port) {
-      // Luôn dùng http:// cho dịch vụ local (cổng chạy HTTP thuần).
-      // Trang Vercel là HTTPS nhưng liên kết điều hướng top-level vẫn mở được http.
-      return `http://${PORTAL_HOST}:${port}`;
+    function appUrl(app) {
+      // Các dịch vụ local chạy HTTP thuần, luôn dùng http:// kể cả khi portal mở qua HTTPS.
+      return `${CONFIG.protocol}://${currentHost}:${app.port}`;
     }
 
-    // Gán href động cho từng card
-    APPS.forEach(app => {
-      const card = document.getElementById(`card-${app.id}`);
-      if (card) card.href = appUrl(app.port);
-    });
+    function setHost(host) {
+      currentHost = host;
+      document.querySelectorAll('.host-pill').forEach(el => {
+        el.classList.toggle('active', el.dataset.host === host);
+      });
+      document.getElementById('portal-host').textContent = host;
+      document.getElementById('portal-url').textContent = `Điểm truy cập mọi ứng dụng: ${CONFIG.protocol}://${host}`;
+      CONFIG.apps.forEach(app => {
+        const card = document.getElementById(`card-${app.id}`);
+        if (card) card.href = appUrl(app);
+      });
+      checkAll();
+    }
 
-    document.getElementById('host-badge').textContent = PORTAL_HOST;
-    document.getElementById('portal-host').textContent = PORTAL_HOST;
-    document.getElementById('portal-url').textContent = `Điểm truy cập mọi ứng dụng: http://${PORTAL_HOST}`;
+    function renderHostSwitcher() {
+      const wrap = document.getElementById('host-switcher');
+      wrap.innerHTML = '';
+      CONFIG.accessHosts.forEach(host => {
+        const pill = document.createElement('div');
+        pill.className = 'host-pill' + (host === currentHost ? ' active' : '');
+        pill.dataset.host = host;
+        pill.textContent = host;
+        pill.addEventListener('click', () => setHost(host));
+        wrap.appendChild(pill);
+      });
+    }
+
+    function renderApps() {
+      const grid = document.getElementById('grid');
+      grid.innerHTML = '';
+      CONFIG.apps.forEach((app, i) => {
+        const card = document.createElement('a');
+        card.className = `card card-${(i % 5) + 1}`;
+        card.id = `card-${app.id}`;
+        card.href = appUrl(app);
+        card.target = '_blank';
+        card.rel = 'noopener';
+        card.innerHTML = `
+          <div class="card-icon">${app.icon}</div>
+          <div>
+            <div class="card-title">${app.title}</div>
+            <div class="card-desc">${app.desc}</div>
+          </div>
+          <div class="card-footer">
+            <span class="port-badge">:${app.port}</span>
+            <span class="arrow">→</span>
+          </div>`;
+        grid.appendChild(card);
+      });
+    }
+
+    function renderStatusBar() {
+      const bar = document.getElementById('status-bar');
+      bar.innerHTML = '';
+      const all = document.createElement('div');
+      all.className = 'status-pill';
+      all.innerHTML = '<span class="dot" id="dot-all"></span>Kiểm tra kết nối';
+      all.addEventListener('click', checkAll);
+      bar.appendChild(all);
+      CONFIG.apps.forEach(app => {
+        const pill = document.createElement('div');
+        pill.className = 'status-pill';
+        pill.innerHTML = `<span class="dot" id="dot-${app.id}"></span><span>${app.title}</span>`;
+        bar.appendChild(pill);
+      });
+    }
+
+    function render() {
+      document.getElementById('title').textContent = CONFIG.title;
+      document.getElementById('subtitle').textContent = CONFIG.subtitle;
+      currentHost = CONFIG.targetHost || (CONFIG.accessHosts[0] ?? DEFAULT_CONFIG.targetHost);
+      renderHostSwitcher();
+      renderApps();
+      renderStatusBar();
+      setHost(currentHost);
+    }
+
+    async function loadConfig() {
+      try {
+        const res = await fetch('config.json', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          CONFIG = { ...DEFAULT_CONFIG, ...data };
+          if (Array.isArray(data.apps)) CONFIG.apps = data.apps;
+          if (Array.isArray(data.accessHosts) && data.accessHosts.length) CONFIG.accessHosts = data.accessHosts;
+        }
+      } catch {
+        // Không có config.json → dùng mặc định
+      }
+      render();
+    }
 
     async function checkPort(url) {
       if (IS_SECURE) {
@@ -370,11 +388,11 @@
       dotAll.className = 'dot loading';
       let allOk = true;
 
-      for (const app of APPS) {
+      for (const app of CONFIG.apps) {
         const dot = document.getElementById(`dot-${app.id}`);
         if (!dot) continue;
         dot.className = 'dot loading';
-        const ok = await checkPort(appUrl(app.port));
+        const ok = await checkPort(appUrl(app));
         dot.className = 'dot ' + (ok ? 'online' : 'error');
         if (!ok) allOk = false;
       }
@@ -382,7 +400,7 @@
       dotAll.className = 'dot ' + (allOk ? 'online' : 'error');
     }
 
-    window.addEventListener('load', () => setTimeout(checkAll, 300));
+    window.addEventListener('load', loadConfig);
   </script>
 
 </body>
