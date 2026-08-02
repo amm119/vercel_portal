@@ -13,13 +13,6 @@
       "desc": "Tra cứu và chỉnh sửa danh sách biên chế đơn vị từ file CSV. Hỗ trợ tìm kiếm nhanh, lọc và lưu tự động."
     },
     {
-      "id": 2,
-      "port": 8888,
-      "icon": "🔍",
-      "title": "Tuyển quân cơ sở",
-      "desc": "Công cụ tìm kiếm danh sách tuyển quân theo khu vực, đọc dữ liệu trực tiếp từ các file Excel."
-    },
-    {
       "id": 3,
       "port": 4173,
       "icon": "⚙️",
