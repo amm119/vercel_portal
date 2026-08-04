@@ -32,6 +32,13 @@
       "icon": "📊",
       "title": "Tối giản Excel",
       "desc": "Giảm kích thước file Excel, xoá format rác ngoài vùng dữ liệu, xoá Macro/VBA. Giữ nguyên dữ liệu và định dạng."
+    },
+    {
+      "id": 6,
+      "port": 4174,
+      "icon": "🛡️",
+      "title": "Dự bị động viên",
+      "desc": "Hệ thống quản lý danh sách quân nhân xuất ngũ với cơ sở dữ liệu Supabase, phân loại đơn vị biên chế, báo cáo và xuất Excel."
     }
   ]
 }
